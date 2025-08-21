@@ -98,11 +98,11 @@ task01_qianwen_project/
 │       ├── config.py              # 配置管理
 │       ├── start_server.py        # 启动脚本
 │       ├── requirements.txt       # 依赖包列表
-│       ├── .env.example           # 环境变量模板
+│       ├── .env                   # 环境变量模板
 │       ├── ai_providers/          # AI提供商模块
 │       └── Dockerfile             # 容器化部署配置（管理前端、后端、数据库等服务） 
 ├── docs/              # 项目文档
-├── README             # 项目总说明（技术栈、启动方式、目录说明）
+├── README.md          # 项目总说明（技术栈、启动方式、目录说明）
 └── logs/              # 日志文件目录
 ```
 
