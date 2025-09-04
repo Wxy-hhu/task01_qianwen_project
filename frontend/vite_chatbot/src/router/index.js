@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 // 导入登录页组件（StartPage）
-import StartPage from '../components/StartPage.vue'
+import StartPage from '../views/StartPage.vue'
 
 Vue.use(VueRouter)
 

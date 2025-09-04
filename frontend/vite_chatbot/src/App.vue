@@ -247,7 +247,7 @@ import axios from 'axios';
 import MarkdownRenderer from './components/MarkdownRenderer.vue';
 import AiThinkingIndicator from './components/AiThinkingIndicator.vue';
 // import LoginPage from './components/LoginPage.vue';
-import StartPage from './components/StartPage.vue'
+import StartPage from './views/StartPage.vue'
 
 export default {
   components: {
