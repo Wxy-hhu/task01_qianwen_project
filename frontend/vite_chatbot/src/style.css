@@ -48,6 +48,8 @@ body {
   display: flex;
   height: 100vh;
   width: 100%;
+    /* flex: 1;
+  overflow: auto; */
 }
 
 .sidebar {
@@ -56,6 +58,11 @@ body {
   border-right: 1px solid #e0e0e0;
   display: flex;
   flex-direction: column;
+  /* overflow-y: auto; */
+  transition: width 0.3s ease; /* 平滑过渡效果 */
+  position: relative;
+  height: 100vh; /* 确保占满整个视口高度 */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05); /* 增加轻微阴影提升层次感 */
 }
 
 .sidebar-header {
@@ -456,7 +463,7 @@ body {
 }
 
 .session-item.active {
-  background-color: #e0f0ff;
+  background-color: #e0f0e0;
   font-weight: bold;
 }
 
@@ -473,6 +480,7 @@ body {
 
 .session-preview {
   font-size: 14px;
+  color: #333;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -490,3 +498,92 @@ body {
 .delete-session-btn:hover {
   color: #ff4d4f;
 }
+
+
+/* 基础侧边栏样式 */
+/* .sidebar {
+  width: 280px;
+  height: 100vh;
+  background: #fff;
+  border-right: 1px solid #eee;
+  overflow-y: auto;
+  transition: width 0.3s ease; 
+  position: relative; 
+} */
+
+/* 折叠状态样式 */
+.sidebar.collapsed {
+  width: 60px;
+}
+
+/* 折叠/展开按钮 */
+.toggle-btn {
+  position: absolute;
+  right: -10px;
+  top: 20px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  z-index: 10;
+  font-size: 12px;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.toggle-btn:hover {
+  background: #e0e0e0;
+  transform: scale(1.1);
+}
+
+/* 折叠状态下的logo样式 */
+.collapsed-logo {
+  justify-content: center;
+  padding: 15px 0;
+}
+
+/* 折叠状态下的会话列表 */
+.collapsed-session-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.collapsed-session-item {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.collapsed-session-item.active {
+  background-color: #e8f4ff;
+  color: #1677ff;
+}
+
+/* 其他原有样式保持不变 */
+
+/* #app {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  padding: 1rem 2rem;
+  background-color: #3b82f6;
+  color: white;
+} */

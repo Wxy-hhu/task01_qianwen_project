@@ -1,21 +1,53 @@
 
 <template>
+<div class="app">
+    <!-- 主应用导航栏 -->
+    <!-- <header class="app-header">
+      <div class="logo">
+        <i class="fa fa-comments text-blue-500"></i>
+        <span>AI 聊天助手</span>
+      </div>
+      <button @click="logout" class="logout-btn">
+        <i class="fa fa-sign-out mr-1"></i>退出登录
+      </button>
+    </header> -->
+
   <div class="app-container">
+    <!-- <router-view /> -->
+
+
     <!-- 左侧模型选择面板 -->
-    <div class="sidebar">
+
+    <div class="sidebar" :class="{ 'collapsed': isCollapsed }">
+
+      <!-- 折叠/展开按钮 -->
+      <button class="toggle-btn" @click="toggleSidebar">
+        {{ isCollapsed ? '▶' : '◀' }}
+      </button>
+
       <div class="sidebar-header">
-        <div class="logo">
+        <!-- <div class="logo">
           <div class="logo-icon">🤖</div>
           <span>AI Chat</span>
+        </div> -->
+        <div class="logo" v-if="!isCollapsed">
+          <div class="logo-icon">🤖</div>
+          <span>AI Chat</span>
+        </div>
+        <div class="logo collapsed-logo" v-if="isCollapsed">
+          <div class="logo-icon">🤖</div>
         </div>
       </div>
 
       <!-- 会话列表 -->
       <div class="session-section">
-        <div class="section-title" @click="showSessions = !showSessions">
+        <div class="section-title" @click="showSessions = !showSessions" v-if="!isCollapsed">
           历史会话 {{ showSessions ? '▲' : '▼' }}
         </div>
-        <div class="session-list" v-if="showSessions">
+        <!-- <div class="section-title" @click="showSessions = !showSessions">
+          历史会话 {{ showSessions ? '▲' : '▼' }}
+        </div> -->
+        <div class="session-list" v-if="showSessions && !isCollapsed">
           <div 
             v-for="session in sessions" 
             :key="session.session_id"
@@ -33,10 +65,24 @@
             >×</button>
           </div>
         </div>
+
+        <!-- 折叠状态下的简化会话列表 -->
+        <div class="collapsed-session-list" v-if="isCollapsed">
+          <div 
+            v-for="session in sessions" 
+            :key="session.session_id"
+            class="collapsed-session-item"
+            :class="{ 'active': session.session_id === currentSessionId }"
+            @click="loadSession(session.session_id)"
+            :title="`${session.last_time}\n${session.last_message}`"
+          >
+            <div class="session-icon">💬</div>
+        </div>
+
       </div>
 
-
     </div>
+  </div>
 
     <!-- 右侧对话区域 -->
     <div class="chat-container">
@@ -193,12 +239,15 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
 import axios from 'axios';
 import MarkdownRenderer from './components/MarkdownRenderer.vue';
 import AiThinkingIndicator from './components/AiThinkingIndicator.vue';
+// import LoginPage from './components/LoginPage.vue';
+import StartPage from './components/StartPage.vue'
 
 export default {
   components: {
@@ -214,15 +263,8 @@ export default {
       // 下拉菜单是否展开
       dropdownOpen: false,
       // // 对话消息列表
-      // messages: [],
-      // // 新消息内容
-      // newMessage: '',
-      messages: [
-        //   isThinking: false,
-        //   imageUrl: null,
-        //   imageAlt: null
-        // }
-      ],
+      messages: [],
+      // 新消息内容
       newMessage: '',
       currentAssistantType: 'default',
       thinkingMessages: [
@@ -243,9 +285,14 @@ export default {
       // 所有会话列表
       sessions: [],
       // 是否显示会话列表
-      showSessions: false
+      showSessions: false,
+      // 新增折叠变量
+      isCollapsed: false,
+      showSessions: true,
+      showHeader: true
     };
   },
+
   computed: {
     // 当前选中的模型
     selectedModel() {
@@ -261,11 +308,13 @@ export default {
       return !!this.selectedModelId && (this.newMessage.trim() !== '' || this.previewImageUrl);
     }
   },
+
   created() {
     this.initializeUser();
     this.fetchModels();
     this.fetchSessions();
   },
+
   methods: {
     // 初始化用户
     initializeUser() {
@@ -276,6 +325,39 @@ export default {
         localStorage.setItem('userId', userId);
       }
       this.userId = userId;
+    },
+
+    logout() {
+        // 清除登录状态
+        localStorage.removeItem('isLoggedIn')
+        // 跳回登录页
+        this.$router.push('/')
+      },
+    
+    
+    mounted() {
+      // 检查登录状态：如果未登录，强制跳回登录页
+      if (localStorage.getItem('isLoggedIn') !== 'true') {
+        this.$router.push('/')
+      }
+    },
+
+    // 新增折叠/展开切换方法
+    toggleSidebar() {
+      this.isCollapsed = !this.isCollapsed;
+      // 可以在这里添加本地存储，记住用户偏好
+      // localStorage.setItem('sidebarCollapsed', this.isCollapsed);
+    },
+    loadSession(sessionId) {
+      this.currentSessionId = sessionId;
+      console.log('加载会话：', sessionId);
+    },
+    deleteSession(sessionId) {
+      this.sessions = this.sessions.filter(session => session.session_id !== sessionId);
+      if (this.currentSessionId === sessionId) {
+        this.currentSessionId = this.sessions[0]?.session_id || '';
+      }
+      console.log('删除会话：', sessionId);
     },
     
    
@@ -716,6 +798,7 @@ export default {
       });
     }
   },
+
   watch: {
     // 当消息列表变化时滚动到底部
     messages() {
